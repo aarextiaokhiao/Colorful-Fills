@@ -1,0 +1,50 @@
+<head>
+	<link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet'>
+	<style>
+		body {
+			margin:0;
+			padding:0;
+			font-family: Roboto;
+		}
+		#topbar #hover {
+			top:-100%;
+			transition-duration: 0.2s
+		}
+		#topbar:hover #hover {
+			top:0%;
+			transition-duration: 0.2s
+		}
+		#bars {
+			border:none;
+			border-spacing:0px
+		}
+		#bars td {
+			overflow:hidden
+		}
+		.bar {
+			position:relative;
+			width:100%;
+			height:120px
+		}
+		.bar div {
+			position:absolute;
+			right:0;
+			height:120px;
+			background-color:rgba(0,0,0,0.75)
+		}
+		.barname {
+			position:fixed;
+			width:120px;
+			background-color:#191919;
+			color:#e5e5e5;
+			z-index:1;
+		}
+	</style>
+	<script type="text/javascript" src="game.js"></script>
+</head>
+<body onload='gameInit()'>
+	<div id='topbar' style='position:fixed;z-index:2'><div id='unhover' style='position:fixed;width:100%;height:18px'></div><div id='hover' style='background-color:#999999;position:fixed;width:100%'>Tabs goes here</div></div>
+	<table id='bars' style='width:100%'>
+		<tr><td id='bar1'><div id='bar1number' class='barname'>Red: 0</div><div class='bar' style='background-color:#e50000'><div id='bar1progress'></div></div></td></td>
+	</table>
+</body>
