@@ -1,50 +1,28 @@
 <head>
 	<link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet'>
-	<style>
-		body {
-			margin:0;
-			padding:0;
-			font-family: Roboto;
-		}
-		#topbar #hover {
-			top:-100%;
-			transition-duration: 0.2s
-		}
-		#topbar:hover #hover {
-			top:0%;
-			transition-duration: 0.2s
-		}
-		#bars {
-			border:none;
-			border-spacing:0px
-		}
-		#bars td {
-			overflow:hidden
-		}
-		.bar {
-			position:relative;
-			width:100%;
-			height:120px
-		}
-		.bar div {
-			position:absolute;
-			right:0;
-			height:120px;
-			background-color:rgba(0,0,0,0.75)
-		}
-		.barname {
-			position:fixed;
-			width:120px;
-			background-color:#191919;
-			color:#e5e5e5;
-			z-index:1;
-		}
-	</style>
-	<script type="text/javascript" src="game.js"></script>
+	<link href='stylesheets/theme_normal.css' rel='stylesheet'>
+	<script type="text/javascript" src="javascripts/elements.js"></script>
+	<script type="text/javascript" src="javascripts/menu.js"></script>
+	<script type="text/javascript" src="javascripts/game.js"></script>
+	<title>Idle Bars</title>
 </head>
-<body onload='gameInit()'>
-	<div id='topbar' style='position:fixed;z-index:2'><div id='unhover' style='position:fixed;width:100%;height:18px'></div><div id='hover' style='background-color:#999999;position:fixed;width:100%'>Tabs goes here</div></div>
-	<table id='bars' style='width:100%'>
-		<tr><td id='bar1'><div id='bar1number' class='barname'>Red: 0</div><div class='bar' style='background-color:#e50000'><div id='bar1progress'></div></div></td></td>
+<body onload='gameInit()'><table id='bars' style='width:100%'>
+		<tr><td id='bar1'><div class='bar' style='background-color:#e50000'><div id='bar1progress'></div></div><div id='bar1number' class='barname'>Red: 0</div></td></tr>
 	</table>
+	<table id='tabs'><tr><td><button class='long chosen' id='barsbutton' onclick='switchTab("bars")'>Bars</button></td><td><button class='long' id='statsbutton' onclick='switchTab("stats")'>Stats</button></td><td><button class='long' id='achievementsbutton' onclick='switchTab("achievements")'>Achievements</button></td><td><button class='long' id='optionsbutton' onclick='switchTab("options")'>Options</button></td><td><button class='long' id='aboutbutton' onclick='switchTab("about")'>About</button></td></tr></table>
+	<div id='otherTab'><div id='tabstats' class='tab'><div id='timePlayed'></div></div>
+		<div id='tabachievements' class='tab'><div>Coming soon!</div></div>
+		<div id='taboptions' class='tab'><table><tr><td><button class='large' onclick='save()'>Save</button></td>
+			<td><button class='large' onclick='exportSave()'>Export</button></td>
+			<td><button class='large' onclick='importSave()'>Import</button></td>
+			<td><button class='large' onclick='reset()'>Reset</button></td>
+			<td></td></tr>
+			<tr><td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td></tr></table>
+			<div id='exportSave' style='display:none'>Here is your export save. Enjoy! <input id='exportText' style='width: 480px'></input></div></div>
+		<div id='tababout' class='tab'><b style='font-size:200%'>Idle Bars</b><br>Created by Aarex, inspired from <a href='https://rawgit.com/Ikerstreamer/RGB-Idle/master/Index.html' target='_newtab'>RGB Idle</a><br>Version 0.11<br><br>
+			<a>Discord (coming soon)</a> | <a>How to play (coming soon)</a> | <a href='changelog.html' target='_newtab'>Changelog</a></div></div>
 </body>
