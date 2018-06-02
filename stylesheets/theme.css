@@ -1,0 +1,99 @@
+body {
+	background-color: #000000;
+	margin: 0;
+	padding: 0;
+	color: #ffffff;
+	font-size: 16px;
+	font-family: 'Inconsolata', monospace;
+}
+
+button {
+	background-color: rgba(0,0,0,0);
+	margin: 0;
+	padding: 0;
+	color: #ffffff;
+	border: 1px #ffffff solid;
+	font-size: 24px;
+	font-family: 'Inconsolata', monospace;
+	transition-duration: 0.2s
+}
+
+button:hover {
+	background-color: #7f7f7f;
+}
+
+#loading {
+	background-color:#000000;
+	position:fixed;
+	top:0%;
+	height:100%;
+	width:100%;
+	font-size:36px;
+	transition-duration:2s;
+	z-index:1
+}
+
+.button_tabChosen, .button_tabChosen:hover {
+	background-color: #ffffff;
+	color: #000000
+}
+
+.button_optionButton {
+	width:150px;
+	height:60px
+}
+
+#tab_colors td {
+	max-width: 180px;
+	vertical-align: top;
+}
+
+.color {
+	position: relative;
+	height: 180px;
+	width: 180px;
+	padding: 0
+}
+
+.colorNotFilled {
+	height: 100%;
+	width: 100%;
+	background-color: rgba(0,0,0,0.5)
+}
+
+.button_unaffordable, .button_unaffordable:hover {
+	background-color: #000000;
+	color: #7f7f7f
+}
+
+.button_red {
+	background-color: #ff0000;
+	color: #000000
+}
+
+.button_red:hover {
+	background-color: #ff7f7f;
+}
+
+.button_green {
+	background-color: #00ff00;
+	color: #000000
+}
+
+.button_green:hover {
+	background-color: #7fff7f;
+}
+
+.button_blue {
+	background-color: #0000ff;
+	color: #000000
+}
+
+.button_blue:hover {
+	background-color: #7f7fff;
+}
+
+.upgrade_bought, .upgrade_bought:hover {
+	background-color: #007f00;
+	color: #00ff00
+}
