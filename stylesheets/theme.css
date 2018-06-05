@@ -30,7 +30,7 @@ button:hover {
 	width:100%;
 	font-size:36px;
 	transition-duration:2s;
-	z-index:1
+	z-index:2
 }
 
 .button_tabChosen, .button_tabChosen:hover {
@@ -50,14 +50,17 @@ button:hover {
 
 .color {
 	position: relative;
-	height: 180px;
+	height: 15px;
 	width: 180px;
 	padding: 0
 }
 
 .colorNotFilled {
+	position: absolute;
 	height: 100%;
 	width: 100%;
+	top: 0;
+	right: 0;
 	background-color: rgba(0,0,0,0.5)
 }
 

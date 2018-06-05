@@ -14,7 +14,7 @@
 				Fills
 			</b>
 			<br>Now loading...</div>
-		<div style='position:absolute;bottom:0;left:0'>Prototype<br>2018 Aarex T.</div>
+		<div style='position:absolute;bottom:0;left:0'>Prototype: Second Upgrades<br>2018 Aarex T.</div>
 	</div>
 	<div id='tabs'>
 		<button class='button_tabChosen' id='tabButton_colors' onclick='switchTab("colors")'>Colors</button>
@@ -51,9 +51,19 @@
 			</td>
 		</tr>
 		<tr>
-			<td id='upgrades_red' style='display:none'>Every red gives 5%<br>of green up to 1/s.<br><button id='upgrade_red_1' onclick='buyUpgrade("red",1)'>Cost: 5.00k</button></td>
-			<td id='upgrades_green' style='display:none'>Double the red fill gain.<br><button id='upgrade_green_1' onclick='buyUpgrade("green",1)'>Cost: 2.00k</button></td>
-			<td id='unlockColor'><div id='unlockColorDescription'>Unlock green by spending with red.</div><button id='unlockColorButton' onclick='unlockColor()'>Cost: 1.00k</button></td>
+			<td id='upgrades_red' style='display:none'>
+				Every red gives 5%<br>of green up to 1/s.<br><button id='upgrade_red_1' onclick='buyUpgrade("red",1)'>Cost: 5.00e3</button>
+				<div id='upgradeDescription_red_2'>Increase every red fill gain upgrade by +0.40/s.<br><button id='upgrade_red_2' onclick='buyUpgrade("red",2)'>Cost: 2.00e4</button></div>
+			</td>
+			<td id='upgrades_green' style='display:none'>
+				Double the red fill gain.<br><button id='upgrade_green_1' onclick='buyUpgrade("green",1)'>Cost: 2.00e3</button>
+				<div id='upgradeDescription_green_2'>Increase blue fill gain rate based on green fill gain rate.<br><button id='upgrade_green_2' onclick='buyUpgrade("green",2)'>Cost: 1.00e4</button></div>
+			</td>
+			<td id='upgrades_blue' style='display:none'>
+				Double all fill gains.<br><button id='upgrade_blue_1' onclick='buyUpgrade("blue",1)'>Cost: 25</button>
+				<div id='upgradeDescription_blue_2'>Reduce the cost multiplier to x1.1.<br><button id='upgrade_blue_2' onclick='buyUpgrade("blue",2)'>Cost: 100</button></div>
+			</td>
+			<td id='unlockColor'><div id='unlockColorDescription'>Unlock green by spending with red.</div><button id='unlockColorButton' onclick='unlockColor()'>Cost: 1.00e3</button></td>
 		</tr>
 	</table>
 	<div class='tab' id='tab_statistics' style='display:none'>
@@ -101,12 +111,21 @@
 		2018 Aarex T.<br><br>
 		<text style='font-size:24px'><b>Credits</b>:</text><br>
 		- Nobody else! (excluding me)<br><br>
+		<text style='font-size:24px'><b>Discord</b>:</text><br>
+		I created the community server for this game! You can join in the link: (COMING SOON)<br><br>
+		<text style='font-size:24px'><b>Prototype: Second Upgrades</b> (6/4/18):</text><br>
+		- Decreased the cost multiplier for fill gain upgrades to 1.2x.<br>
+		- Increased the green fill gain upgrade to +0.05/s.<br>
+		- Increased the blue fill gain upgrade to +0.01/s.<br>
+		- Added the first blue upgrade. This is locked until you unlock blue.<br>
+		- Added the second upgrade for every color. These are locked until you buy the first blue upgrade.<br>
+		- The boxes are turned into bars and now display percentages for next color.<br>
+		- The save timer is reset when you reseted the game.<br>
+		- Moved 'Discord' header to below 'Credits'.<br><br>
 		<text style='font-size:24px'><b>Prototype</b> (6/2/18):</text><br>
 		- Added red, green, and blue.<br>
 		- Added the gain of red, green, and blue as fill gains.<br>
 		- Added rebuyable fill gain upgrades.<br>
-		- Released.<br><br>
-		<text style='font-size:24px'><b>Discord</b>:</text><br>
-		I created the community server for this game! You can join in the link: (COMING SOON)
+		- Released.
 	</div>
 </body>

@@ -49,10 +49,24 @@ function gameTick() {
 		for (color in colors) {
 			color=colors[color]
 			if (player[color]!=undefined) {
-				updateStyle('notFilled_'+color,'height',(filledUp[color]?0:100-player[color].progress*100)+'%')
-				updateElement('amountValue_'+color,format(player[color].amount))
+				updateStyle('notFilled_'+color,'width',(filledUp[color]?0:100-player[color].progress*100)+'%')
+				updateElement('amountValue_'+color,format(player[color].amount)+(fillGain.rate[color]>10?'':' ('+Math.floor(player[color].progress*100)+'%)'))
 				if (player[color].amount<costs.fillGain[color]) updateClass('fillGainUpgrade_'+color,'button_unaffordable')
 				else updateClass('fillGainUpgrade_'+color,'button_'+color)
+			}
+			
+			var showUpgrades=false
+			if (color=='red') {
+				if (player.green!=undefined) showUpgrades=true
+			} else if (player.blue!=undefined) showUpgrades=true
+			
+			if (showUpgrades) {
+				for (id=1;id<=upgradesLimit[color];id++) {
+					if (!player[color].upgrades.includes(id)) {
+						if (player[color].amount<costs.upgrades[color][id-1]) updateClass('upgrade_'+color+'_'+id,'button_unaffordable')
+						else updateClass('upgrade_'+color+'_'+id,'button_'+color)
+					}
+				}
 			}
 		}
 		
@@ -62,25 +76,6 @@ function gameTick() {
 		} else if (player.blue==undefined) {
 			if (player.green.amount<1000) updateClass('unlockColorButton','button_unaffordable')
 			else updateClass('unlockColorButton','button_green')
-		}
-		
-		if (player.green!=undefined) {
-			for (id=1;id<=costs.upgrades.red.length;id++) {
-				updateElement('upgrade_red_'+(id),'Cost: '+format(costs.upgrades.red[id-1]))
-				if (!player.red.upgrades.includes(id)) {
-					if (player.red.amount<costs.upgrades.red[id-1]) updateClass('upgrade_red_'+id,'button_unaffordable')
-					else updateClass('upgrade_red_'+id,'button_red')
-				}
-			}
-		}
-		if (player.blue!=undefined) {
-			for (id=1;id<=costs.upgrades.green.length;id++) {
-				updateElement('upgrade_green_'+(id),'Cost: '+format(costs.upgrades.green[id-1]))
-				if (!player.green.upgrades.includes(id)) {
-					if (player.green.amount<costs.upgrades.green[id-1]) updateClass('upgrade_green_'+id,'button_unaffordable')
-					else updateClass('upgrade_green_'+id,'button_green')
-				}
-			}
 		}
 	}
 	if (currentTab=='options') {
@@ -106,9 +101,7 @@ function updateDisplay(tab) {
 			if (player[color]!=undefined) {
 				updateElement('fillGainLvl_'+color,player[color].fillGainLvl)
 				updateElement('fillGainRate_'+color,format(fillGain.rate[color],2))
-				var fillGainRateIncreaseTemp=fillGain.rateIncrease[color]
-				if (player.green!=undefined) if (color=='red') if (player.green.upgrades.includes(1)) fillGainRateIncreaseTemp*=2
-				updateElement('fillGainRateIncrease_'+color,format(fillGainRateIncreaseTemp,2))
+				updateElement('fillGainRateIncrease_'+color,format(fillGain.rateIncrease[color],2))
 				updateElement('fillGainUpgrade_'+color,'Cost: '+format(costs.fillGain[color]))
 			}
 			if (color!='red') {
@@ -122,6 +115,30 @@ function updateDisplay(tab) {
 					hideElement('fillGain_'+color)
 				}
 			}
+			
+			var showUpgrades=false
+			if (color=='red') {
+				if (player.green!=undefined) showUpgrades=true
+			} else if (player.blue!=undefined) showUpgrades=true
+			
+			if (showUpgrades) {
+				showElement('upgrades_'+color,'table-cell')
+				for (id=1;id<=costs.upgrades[color].length;id++) {
+					if (id>1) {
+						if (id>upgradesLimit[color]) {
+							hideElement('upgradeDescription_'+color+'_'+id)
+						} else {
+							showElement('upgradeDescription_'+color+'_'+id,'block')
+						}
+					}
+					if (id<=upgradesLimit[color]) {
+						updateElement('upgrade_'+color+'_'+id,'Cost: '+format(costs.upgrades[color][id-1]))
+						if (player[color].upgrades.includes(id)) updateClass('upgrade_'+color+'_'+id,'upgrade_bought')
+						else if (player[color].amount<costs.upgrades[color][id-1]) updateClass('upgrade_'+color+'_'+id,'button_unaffordable')
+						else updateClass('upgrade_'+color+'_'+id,'button_'+color)
+					}
+				}
+			} else hideElement('upgrades_red')
 		}
 		
 		if (player.blue==undefined) {
@@ -130,41 +147,43 @@ function updateDisplay(tab) {
 			else updateElement('unlockColorDescription','Unlock blue by spending with green.')
 			updateElement('unlockColorButton','Cost: '+format(1e3))
 		} else hideElement('unlockColor')
-		
-		if (player.green==undefined) hideElement('upgrades_red')
-		else {
-			showElement('upgrades_red','table-cell')
-			for (id=1;id<=costs.upgrades.red.length;id++) {
-				updateElement('upgrade_red_'+id,'Cost: '+format(costs.upgrades.red[id-1]))
-				if (player.red.upgrades.includes(id)) updateClass('upgrade_red_'+id,'upgrade_bought')
-			}
-		}
-		if (player.blue==undefined) hideElement('upgrades_green')
-		else {
-			showElement('upgrades_green','table-cell')
-			for (id=1;id<=costs.upgrades.green.length;id++) {
-				updateElement('upgrade_green_'+id,'Cost: '+format(costs.upgrades.green[id-1]))
-				if (player.green.upgrades.includes(id)) updateClass('upgrade_green_'+id,'upgrade_bought')
-			}
-		}
 	}
 }
 
-function calculateFillGain(color) {
-	var fillGainTemp
-	if (color=='red') {
-		fillGainTemp=(player.red.fillGainLvl+4)/5
-		if (player.green!=undefined) if (player.green.upgrades.includes(1)) fillGainTemp*=2
-	} else if (color=='green') fillGainTemp=(player.green.fillGainLvl+4)/50
-	else fillGainTemp=(player.blue.fillGainLvl+4)/500
+function calculateFillGain(color) { fillGain.rate[color]=fillGain.rateBase[color]+fillGain.rateIncrease[color]*(player[color].fillGainLvl-1) }
+
+function calculateFillGainBaseAndIncrease(color) {
+	fillGain.rateBase[color]=fillGain.rateBaseBase[color]
+	fillGain.rateIncrease[color]=fillGain.rateIncreaseBase[color]
 	
-	fillGain.rate[color]=fillGainTemp
+	if (color=='red') {
+		if (player.green!=undefined) {
+			if (player.green.upgrades.includes(1)) {
+				fillGain.rateBase[color]*=2
+				fillGain.rateIncrease[color]*=2
+			}
+		}
+		if (player.red.upgrades.includes(2)) {
+			fillGain.rateIncrease[color]+=0.2
+		}
+	}
+	if (color=='blue') {
+		if (player.green.upgrades.includes(2)) {
+			fillGain.rateBase[color]+=fillGain.rate.green*0.01
+		}
+	}
+	if (player.blue!=undefined) {
+		if (player.blue.upgrades.includes(1)) {
+			fillGain.rateBase[color]*=2
+			fillGain.rateIncrease[color]*=2
+		}
+	}
 }
 
 function upgradeFillGain(color) {
 	if (player[color].amount>=costs.fillGain[color]) {
 		player[color].amount-=costs.fillGain[color]
-		costs.fillGain[color]=Math.round(10*Math.pow(1.5,player[color].fillGainLvl))
+		costs.fillGain[color]=Math.round(10*Math.pow(getCostMultiplier(),player[color].fillGainLvl))
 		player[color].fillGainLvl++
 		calculateFillGain(color)
 		
@@ -177,6 +196,7 @@ function unlockColor() {
 		if (player.red.amount>=1000) {
 			player.red.amount-=1000
 			player.green={progress:0,amount:0,fillGainLvl:1,upgrades:[]}
+			calculateFillGainBaseAndIncrease('green')
 			calculateFillGain('green')
 			costs.fillGain.green=10
 			
@@ -186,6 +206,7 @@ function unlockColor() {
 		if (player.green.amount>=1000) {
 			player.green.amount-=1000
 			player.blue={progress:0,amount:0,fillGainLvl:1,upgrades:[]}
+			calculateFillGainBaseAndIncrease('blue')
 			calculateFillGain('blue')
 			costs.fillGain.blue=10
 			
@@ -199,8 +220,57 @@ function buyUpgrade(color,id) {
 		player[color].amount-=costs.upgrades[color][id-1]
 		player[color].upgrades.push(id)
 		
-		if (color=='green'||id==2) calculateFillGain('red')
+		if (color=='red') {
+			if (id==2) {
+				calculateFillGainBaseAndIncrease('red')
+				calculateFillGain('red')
+			}
+		}
+		if (color=='green') {
+			if (id==1) {
+				calculateFillGainBaseAndIncrease('red')
+				calculateFillGain('red')
+			}
+			if (id==2) {
+				calculateFillGainBaseAndIncrease('blue')
+				calculateFillGain('blue')
+			}
+		}
+		if (color=='blue') {
+			if (id==1) {
+				calculateFillGainBaseAndIncrease('red')
+				calculateFillGainBaseAndIncrease('green')
+				calculateFillGainBaseAndIncrease('blue')
+				calculateFillGain('red')
+				calculateFillGain('green')
+				calculateFillGain('blue')
+				
+				updateUpgradesLimit()
+			}
+			if (id==2) {
+				for (color in colors) {
+					color=colors[color]
+					costs.fillGain[color]=Math.round(10*Math.pow(1.1,player[color].fillGainLvl-1))
+				}
+			}
+		}
 			
 		updateDisplay('colors')
 	}
+}
+
+function updateUpgradesLimit() {
+	upgradesLimit.red=1
+	upgradesLimit.green=1
+	upgradesLimit.blue=1
+	if (player.blue!=undefined) if (player.blue.upgrades.includes(1)) {
+		upgradesLimit.red=2
+		upgradesLimit.green=2
+		upgradesLimit.blue=2
+	}
+}
+
+function getCostMultiplier() {
+	if (player.blue!=undefined) if (player.blue.upgrades.includes(2)) return 1.1
+	return 1.2
 }

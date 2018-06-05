@@ -29,9 +29,7 @@ function switchTab(id) {
 function format(value,dpBefore1000) {
 	if (value == Number.POSITIVE_INFINITY) return '&#x221e;'
 	if (Number.isNaN(value)) return '?'
-	if (value<0.95/Math.pow(10,dpBefore1000)) {
-		return value.toFixed(dpBefore1000+1)
-	} else if (value<9.995) {
+	if (value<9.995) {
 		return value.toFixed(dpBefore1000)
 	} else if (value<99.95) {
 		return value.toFixed(Math.max(dpBefore1000-1,0))
@@ -165,10 +163,12 @@ function loadSave(savefile) {
 		for (color in colors) {
 			color=colors[color]
 			if (player[color]!=undefined) {
-				costs.fillGain[color]=Math.round(10*Math.pow(1.5,player[color].fillGainLvl-1))
+				costs.fillGain[color]=Math.round(10*Math.pow(getCostMultiplier(),player[color].fillGainLvl-1))
+				calculateFillGainBaseAndIncrease(color)
 				calculateFillGain(color)
 			}
 		}
+		updateUpgradesLimit()
 		updateDisplay('colors')
 		
 		updateElement('option_notation','Notation: '+notationArray[player.options.notation])
@@ -220,8 +220,9 @@ function resetGame() {
 		player.lastTick=new Date().getTime()
 			
 		filledUp={}
-		costs={fillGain:{red:10},upgrades:{red:[5000],green:[2000]}}
-		fillGain={red:1}
+		costs={fillGain:{red:10},upgrades:{red:[5000,2e4],green:[2000,1e4],blue:[25,100]}}
+		fillGain={rate:{red:1},rateIncrease:{red:0.2},rateBase:{red:1},rateBaseBase:{red:1,green:0.1,blue:0.01},rateIncreaseBase:{red:0.2,green:0.05,blue:0.01}}
+		upgradesLimit={red:1,green:1,blue:1}
 
 		updateDisplay('colors')
 	
@@ -233,6 +234,7 @@ function resetGame() {
 		hideElement('exportSave')
 		
 		gameLoopInterval=setInterval(gameLoop,maxMillisPerTick)
+		saveGame()
 	}
 }
 

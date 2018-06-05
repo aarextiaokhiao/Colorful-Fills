@@ -4,7 +4,7 @@ player={lastTick:0,
 	options:{notation:0,
 		updateRate:20},
 	version:1,
-	beta:1}
+	beta:2}
 const timeframes={year:31556952,
 	month:2629746,
 	day:86400,
@@ -47,5 +47,6 @@ oldTab='colors'
 
 const colors=['red','green','blue']
 filledUp={}
-costs={fillGain:{red:10},upgrades:{red:[5000],green:[2000]}}
-fillGain={rate:{red:1},rateIncrease:{red:0.2,green:0.02,blue:0.002}}
+costs={fillGain:{red:10},upgrades:{red:[5000,2e4],green:[2000,1e4],blue:[25,100]}}
+fillGain={rate:{red:1},rateIncrease:{red:0.2},rateBase:{red:1},rateBaseBase:{red:1,green:0.1,blue:0.01},rateIncreaseBase:{red:0.2,green:0.05,blue:0.01}}
+upgradesLimit={red:1,green:1,blue:1}
