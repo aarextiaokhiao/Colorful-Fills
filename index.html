@@ -14,15 +14,22 @@
 				Fills
 			</b>
 			<br>Now loading...</div>
-		<div style='position:absolute;bottom:0;left:0'>Prototype: Second Upgrades<br>2018 Aarex T.</div>
+		<div style='position:absolute;bottom:0;left:0'>Prototype: Tick tock...<br>2018 Aarex T.</div>
 	</div>
 	<div id='tabs'>
 		<button class='button_tabChosen' id='tabButton_colors' onclick='switchTab("colors")'>Colors</button>
-		<button id='tabButton_statistics' onclick='switchTab("statistics")'>Statistics</button>
 		<button id='tabButton_options' onclick='switchTab("options")'>Options</button>
+		<button id='tabButton_statistics' onclick='switchTab("statistics")'>Statistics</button>
 		<button id='tabButton_about' onclick='switchTab("about")'>About</button>
 	</div>
 	<table id='tab_colors'>
+		<tr id='clock' style='display:none'>
+			<td><b>Clock speed</b>: <text id='clockSpeed'></text> Hz</td>
+			<td colspan=2>
+				(<b id='multiplier_red' style='color:#ff0000'></b> x <b id='multiplier_green' style='color:#00ff00'></b> x <b id='multiplier_blue' style='color:#0000ff'></b>)<sup>1/3</sup> = <b id='multiplied'></b><br>
+				<b>Upgrade clock speed at</b>: <text id='nextClockSpeedThreshold'></text>
+			</td>
+		</tr>
 		<tr>
 			<td class='color' style='background-color: #ff0000'><div class='colorNotFilled' id='notFilled_red'></div></td>
 			<td class='color' id='fill_green' style='background-color: #00ff00;display:none'><div class='colorNotFilled' id='notFilled_green'></div></td>
@@ -35,35 +42,41 @@
 		</tr>
 		<tr>
 			<td>
-				<b>Fill gain</b> (Lv. <text id='fillGainLvl_red'>1</text>):<br>
-				<text id='fillGainRate_red'>1.00</text>/s (+<text id='fillGainRateIncrease_red'>0.20</text>/s)<br>
-				<button id='fillGainUpgrade_red' onclick='upgradeFillGain("red")'>Cost: 10</button>
+				<b>Fill gain</b> (<text id='fillGainLvl_red'>Lv. 1</text>):<br>
+				<text id='fillGainRate_red'>1.00/s (+0.20/s)</text><br>
+				<button id='fillGainUpgrade_red' onclick='upgradeFillGain("red")'>Cost: 10</button><br>
+				<button id='fillGainUpgradeAll_red' style='display:none' onclick='upgradeFillGain("red",true)'>Max All</button>
 			</td>
 			<td id='fillGain_green' style='display:none'>
-				<b>Fill gain</b> (Lv. <text id='fillGainLvl_green'>1</text>):<br>
-				<text id='fillGainRate_green'>0.10</text>/s (+<text id='fillGainRateIncrease_green'>0.02</text>/s)<br>
-				<button id='fillGainUpgrade_green' onclick='upgradeFillGain("green")'>Cost: 10</button>
+				<b>Fill gain</b> (<text id='fillGainLvl_green'></text>):<br>
+				<text id='fillGainRate_green'></text><br>
+				<button id='fillGainUpgrade_green' onclick='upgradeFillGain("green")'></button><br>
+				<button id='fillGainUpgradeAll_green' onclick='upgradeFillGain("green",true)'>Max All</button>
 			</td>
 			<td id='fillGain_blue' style='display:none'>
-				<b>Fill gain</b> (Lv. <text id='fillGainLvl_blue'>1</text>):<br>
-				<text id='fillGainRate_blue'>0.01</text>/s (+<text id='fillGainRateIncrease_blue'>0.002</text>/s)<br>
-				<button id='fillGainUpgrade_blue' onclick='upgradeFillGain("blue")'>Cost: 10</button>
+				<b>Fill gain</b> (<text id='fillGainLvl_blue'></text>):<br>
+				<text id='fillGainRate_blue'></text><br>
+				<button id='fillGainUpgrade_blue' onclick='upgradeFillGain("blue")'></button><br>
+				<button id='fillGainUpgradeAll_blue' onclick='upgradeFillGain("blue",true)'>Max All</button>
 			</td>
 		</tr>
 		<tr>
 			<td id='upgrades_red' style='display:none'>
-				Every red gives 5%<br>of green up to 1/s.<br><button id='upgrade_red_1' onclick='buyUpgrade("red",1)'>Cost: 5.00e3</button>
-				<div id='upgradeDescription_red_2'>Increase every red fill gain upgrade by +0.40/s.<br><button id='upgrade_red_2' onclick='buyUpgrade("red",2)'>Cost: 2.00e4</button></div>
+				Every red gives 5%<br>of green up to 1/s.<br><button class='button_unaffordable' id='upgrade_red_1' onclick='buyUpgrade("red",1)'></button>
+				<div id='upgradeDescription_red_2'>Increase every red fill gain upgrade by +0.40/s.<br><button class='button_unaffordable' id='upgrade_red_2' onclick='buyUpgrade("red",2)'></button></div>
+				<div id='upgradeDescription_red_3'>Break the cap for first red upgrade.<br><button class='button_unaffordable' id='upgrade_red_3' onclick='buyUpgrade("red",3)'></button></div>
 			</td>
 			<td id='upgrades_green' style='display:none'>
-				Double the red fill gain.<br><button id='upgrade_green_1' onclick='buyUpgrade("green",1)'>Cost: 2.00e3</button>
-				<div id='upgradeDescription_green_2'>Increase blue fill gain rate based on green fill gain rate.<br><button id='upgrade_green_2' onclick='buyUpgrade("green",2)'>Cost: 1.00e4</button></div>
+				Double the red fill gain.<br><button class='button_unaffordable' id='upgrade_green_1' onclick='buyUpgrade("green",1)'></button>
+				<div id='upgradeDescription_green_2'>Increase blue fill gain rate based on green fill gain rate.<br><button class='button_unaffordable' id='upgrade_green_2' onclick='buyUpgrade("green",2)'></button></div>
+				<div id='upgradeDescription_green_3'>Increase the green gain percentage for first red upgrade to 10%.<br><button class='button_unaffordable' id='upgrade_green_3' onclick='buyUpgrade("green",3)'></button></div>
 			</td>
 			<td id='upgrades_blue' style='display:none'>
-				Double all fill gains.<br><button id='upgrade_blue_1' onclick='buyUpgrade("blue",1)'>Cost: 25</button>
-				<div id='upgradeDescription_blue_2'>Reduce the cost multiplier to x1.1.<br><button id='upgrade_blue_2' onclick='buyUpgrade("blue",2)'>Cost: 100</button></div>
+				Double all fill gains.<br><button class='button_unaffordable' id='upgrade_blue_1' onclick='buyUpgrade("blue",1)'></button>
+				<div id='upgradeDescription_blue_2'>Reduce the cost multiplier to x1.1.<br><button class='button_unaffordable' id='upgrade_blue_2' onclick='buyUpgrade("blue",2)'></button></div>
+				<div id='upgradeDescription_blue_3'>Unlock a Clock feature.<br><button class='button_unaffordable' id='upgrade_blue_3' onclick='buyUpgrade("blue",3)'></button></div>
 			</td>
-			<td id='unlockColor'><div id='unlockColorDescription'>Unlock green by spending with red.</div><button id='unlockColorButton' onclick='unlockColor()'>Cost: 1.00e3</button></td>
+			<td id='unlockColor'><div id='unlockColorDescription'>Unlock green by spending with red.</div><button class='button_unaffordable' id='unlockColorButton' onclick='unlockColor()'>Cost: 1.00e3</button></td>
 		</tr>
 	</table>
 	<div class='tab' id='tab_statistics' style='display:none'>
@@ -85,7 +98,6 @@
 				<td id='statsValue_blueTotal' style='width:240px'></td>
 			</tr>
 		</table>
-		<div class='footerBlockage'></div>
 	</div>
 	<div id='tab_options' style='display:none'>
 		<b style='font-size:24px'>Saving</b><br>
@@ -101,7 +113,6 @@
 			<td><button class='button_optionButton' id='option_notation' onClick='switchNotation()'>Notation: Scientific</button></td>
 			<td><button class='button_optionButton' id='option_updateRate' onClick='changeUpdateRate()'>Update rate: 20 TPS</button></td>
 		</tr></table>
-		<div class='footerBlockage'></div>
 	</div>
 	<div id='tab_about' style='display:none'>
 		<b style='font-size:32px'>
@@ -113,6 +124,13 @@
 		- Nobody else! (excluding me)<br><br>
 		<text style='font-size:24px'><b>Discord</b>:</text><br>
 		I created the community server for this game! You can join in the link: (COMING SOON)<br><br>
+		<text style='font-size:24px'><b>Prototype: Tick tock...</b> (6/5/18):</text><br>
+		- Fill gain upgrades now have the cap for the highest level you can upgrade.<br>
+		- Added ascension for fill gain upgrades! This resets your red amount and fill gain upgrades but gain a 2x fill gain boost.<br>
+		- Added the third upgrade for every color. These are locked until you ascend the red fill gain upgrade.<br>
+		- Added a Clock feature. This helps to ascend the green fill gain upgrade and blue fill gain upgrade faster.<br>
+		- Moved the Options button to after the Colors button.<br>
+		- Fixed the bug that unlocking green doesn't show the red upgrades until you unlock blue and resetting the game doesn't hide the green and blue upgrades.<br><br>
 		<text style='font-size:24px'><b>Prototype: Second Upgrades</b> (6/4/18):</text><br>
 		- Decreased the cost multiplier for fill gain upgrades to 1.2x.<br>
 		- Increased the green fill gain upgrade to +0.05/s.<br>

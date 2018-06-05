@@ -151,6 +151,15 @@ function loadSave(savefile) {
 	try {
 		savefile=JSON.parse(atob(savefile))
 		
+		if (savefile.version<=1) {
+			if (savefile.beta<3) {
+				for (color in colors) {
+					color=colors[color]
+					if (player[color]!=undefined) player[color].fillGainLvl=Math.min(player[color].fillGainLvl,100)
+				}
+			}
+		}
+		
 		if (savefile.version>player.version) throw 'This savefile, which has version '+savefile.version+' saved, was incompatible to version '+player.version+'.'
 		else if (savefile.version==player.version) {
 			if (savefile.beta>player.beta) throw 'This savefile, which has beta '+savefile.beta+' saved, was incompatible to beta '+player.beta+'.'			
@@ -160,14 +169,16 @@ function loadSave(savefile) {
 		
 		player=savefile
 		
+		if (player.blue!=undefined) if (player.blue.upgrades.includes(2)) costMultiplier=1.1
 		for (color in colors) {
 			color=colors[color]
 			if (player[color]!=undefined) {
-				costs.fillGain[color]=Math.round(10*Math.pow(getCostMultiplier(),player[color].fillGainLvl-1))
+				costs.fillGain[color]=Math.round(10*Math.pow(costMultiplier,player[color].fillGainLvl-1))
 				calculateFillGainBaseAndIncrease(color)
 				calculateFillGain(color)
 			}
 		}
+		if (player.clockSpeed!=undefined) nextClockSpeedThreshold=1e4*Math.pow(player.clockSpeed,3)
 		updateUpgradesLimit()
 		updateDisplay('colors')
 		
@@ -214,15 +225,17 @@ function resetGame() {
 		player.red={progress:0,amount:0,fillGainLvl:1,upgrades:[]}
 		delete player.green
 		delete player.blue
+		delete player.clockSpeed
 		player.statistics={playtime:0}
 		player.options={notation:0,
 			updateRate:20}
 		player.lastTick=new Date().getTime()
 			
 		filledUp={}
-		costs={fillGain:{red:10},upgrades:{red:[5000,2e4],green:[2000,1e4],blue:[25,100]}}
+		costs={fillGain:{red:10},upgrades:{red:[5000,2e4,3e5],green:[2000,1e4,3e4],blue:[25,100,2e3]}}
 		fillGain={rate:{red:1},rateIncrease:{red:0.2},rateBase:{red:1},rateBaseBase:{red:1,green:0.1,blue:0.01},rateIncreaseBase:{red:0.2,green:0.05,blue:0.01}}
 		upgradesLimit={red:1,green:1,blue:1}
+		costMultiplier=1.2
 
 		updateDisplay('colors')
 	
